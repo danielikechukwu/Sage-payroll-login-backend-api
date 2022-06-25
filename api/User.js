@@ -126,30 +126,35 @@ router.post('/signup',  (req, res) => {
             })
 
         }
-        
+
 })
 
 //Login
-router.post('/login', (req, res) => {   
+router.post('/login', (req, res) => {
     
     let { username, password} = req.body;
 
     let user = {};
 
     user.username = username.trim();
+
     user.password = password.trim();
 
     if(username == "" || password == ""){
 
         res.json({
+
             status: "FAILED",
             message: "Empty credentials supplied"
+
         })
     }
     else{
+
         User.find({username}).then(data => {
 
             if(data.length){
+
                 //User exist
                 const hashedPassword = data[0].password;
 
@@ -164,12 +169,15 @@ router.post('/login', (req, res) => {
                         })
                     }
                     else{
+
                         res.json({
                             status: "FAILED",
                             message: "Invalid password entered"
                         })
+
                     }
                 }).catch(err => {
+
                     res.json({
                         status: "FAILED",
                         message: "An error occurred while comparing password"
@@ -177,6 +185,7 @@ router.post('/login', (req, res) => {
                 })
             }
             else {
+                
                 res.json({
                     status: "FAILED",
                     message: "Invalid credentials entered"
