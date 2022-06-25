@@ -10,7 +10,9 @@ const app = express();
 
 const UserRouter = require('./api/User');
 
-const Port = process.env.Port || 8080;
+
+
+const port = process.env.PORT || 8080;
 
 //for accepting post form data require(id: string): any
 
@@ -26,6 +28,6 @@ app.use('/user', UserRouter);
 
 //listening to port
 
-app.listen(Port, function() {
-    console.log(`Server is ready at ${Port}`)
+app.listen(port, function() {
+    console.log(`Server is ready at ${port}`)
 })
