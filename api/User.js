@@ -11,6 +11,10 @@ const User = require('./../models/User');
 
 const bcrypt = require('bcrypt');
 
+const jwt = require("jsonwebtoken");
+
+
+
 
 
 //Signup
@@ -33,6 +37,17 @@ router.post('/signup',  (req, res) => {
          user.dateOfBirth = dateOfBirth.trim();
          user.houseAddress = houseAddress.trim();
          user.zone = zone.trim();
+
+
+         const generateToken = (user) => {
+
+            return jwt.sign(
+                {
+                    _id: user._id, email: user.email,
+                }, 
+                "SUPERSECRET123"
+            )
+        }        
 
 
          if(  username== "" || password=="" || fullname == "", residentId=="" || phone=="" || maritalStatus=="" || gender=="" || apartmentType=="" || apartmentInfo =="" || dateOfBirth=="" || houseAddress=="" || zone==""){
@@ -92,12 +107,18 @@ router.post('/signup',  (req, res) => {
 
                         });
 
+                        
+
                         newUser.save().then(result => {
 
+                            const token = generateToken(user)
+
                             res.json({
-                                status: "SUCCESS",
+                                status: "SUCCE",
                                 message: "Signup successful",
                                 data: result,
+                                token: token,
+                                
 
                             })
                         }).catch(err => {
@@ -140,6 +161,20 @@ router.post('/login', (req, res) => {
 
     user.password = password.trim();
 
+     
+    const generateToken = (user) => {
+
+        return jwt.sign(
+            {
+                _id: user._id, email: user.email,
+            }, 
+            "SUPERSECRET123"
+        )
+    }  
+
+
+    const token = generateToken(user)
+
     if(username == "" || password == ""){
 
         res.json({
@@ -149,7 +184,10 @@ router.post('/login', (req, res) => {
 
         })
     }
+    
     else{
+
+        
 
         User.find({username}).then(data => {
 
@@ -165,7 +203,8 @@ router.post('/login', (req, res) => {
                         res.json({
                             status: "SUCCESS",
                             message: "Sign-in successful",
-                            data: data
+                            data: data,
+                            token: token,
                         })
                     }
                     else{
